@@ -1,18 +1,16 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from ..models import Sell
-from django.db.models import Q
 
+from django.db.models import Q
+from django. contrib.auth.decorators import login_required
 
 from django.core.paginator import Paginator
 
-
-# Create your views here.
-
-def index(request):
+@login_required(login_url='common:login')
+def sell_mypost(request, sell_id):
     """
     joonggo 목록 출력
     """
-
     page = request.GET.get('page', '1')
     kw = request.GET.get('kw', '')
     
@@ -22,23 +20,14 @@ def index(request):
             Q(subject__icontains=kw) | #제목 검색
             Q(content__icontains=kw) | #내용 검색
             Q(author__username__icontains=kw)
-        ).distinct()
-
+        )
    
     paginator = Paginator(sell_list, 12)
     page_obj = paginator.get_page(page)
 
     context = {'sell_list': page_obj,
                'page': page,
-               'kw': kw
+               'kw': kw,
                }
-
-    return render(request, 'joonggo/sell_list.html', context)
-
-def detail(request,sell_id):
-    """
-    joonggo 내용 출력
-    """
-    sell = get_object_or_404(Sell, pk=sell_id)
-    context = {'sell': sell}
-    return render(request, 'joonggo/sell_detail.html', context)
+    
+    return render(request, 'joonggo/sell_mypost.html', context)
