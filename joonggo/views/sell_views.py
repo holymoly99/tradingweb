@@ -81,7 +81,7 @@ def sell_mypost(request, sell_id):
             Q(subject__icontains=kw) | #제목 검색
             Q(content__icontains=kw) | #내용 검색
             Q(author__username__icontains=kw)
-        )
+        ).distinct()
    
     paginator = Paginator(sell_list, 12)
     page_obj = paginator.get_page(page)
@@ -102,13 +102,13 @@ def sell_mylike(request, sell_id):
     kw = request.GET.get('kw', '')
     
     # sell_list = Sell.objects.order_by('-create_date')
-    sell_list = request.user.author_sell.order_by('-create_date')
+    sell_list = request.user.voter_sell.order_by('-create_date')
     if kw:
         sell_list = sell_list.filter(
             Q(subject__icontains=kw) | #제목 검색
             Q(content__icontains=kw) | #내용 검색
             Q(author__username__icontains=kw)
-        )
+        ).distinct()
    
     paginator = Paginator(sell_list, 12)
     page_obj = paginator.get_page(page)
@@ -118,4 +118,4 @@ def sell_mylike(request, sell_id):
                'kw': kw,
                }
     
-    return render(request, 'joonggo/sell_mypost.html', context)
+    return render(request, 'joonggo/sell_mylike.html', context)
