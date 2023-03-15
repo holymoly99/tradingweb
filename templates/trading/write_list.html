@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-3">
+    <table class="table">
+        <thead>
+            <tr class="thead-dark">
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성일시</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if write_list %}
+            {% for write in write_list %}
+                <tr>
+                    <td>
+                        {{ forloop.counter }}
+                    </td>
+                    <td>
+                    <a href="{% url 'trading:detail' write.id %}">{{ write.subject }}</a>
+                    </td>
+                    <td>
+                    {{ write.create_date }}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="3">질문이 없습니다.</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'trading:write_create' %}" class="btn btn-primary">질문 등록하기</a>
+
+</div>
+{% endblock %}
